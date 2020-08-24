@@ -1,0 +1,6 @@
+#ifndef UNIVERSAL_FUNCTIONS_H
+#define UNIVERSAL_FUNCTIONS_H
+
+#include <QPair>
+
+#endif // UNIVERSAL_FUNCTIONS_H
