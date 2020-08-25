@@ -19,6 +19,7 @@ public:
     void setButtonsStatus();
     void setView();
     void initBackground();
+    void setDisplayTime(int time = 0);
 
     bool eventFilter(QObject* object, QEvent* event) override;
 

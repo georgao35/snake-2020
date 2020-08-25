@@ -74,17 +74,11 @@ MainWindow::MainWindow(QWidget *parent)
     addToolBar(tr("new game"))->addAction(restart);
     connect(ui->restartButton,&QPushButton::clicked,restart,&QAction::trigger);
     //connect(restart,&QAction::triggered,game,&gamecontroller::restart);
-    connect(restart,&QAction::triggered,[this](){
-        scene = new QGraphicsScene(this);
-        view->setScene(scene);
-        setView();
-        initBackground();
-        game = new gamecontroller(this,scene,this);
-    });
+    connect(restart,&QAction::triggered,game,&gamecontroller::restart);
     /*--设置动作状态--*/
     setButtonsStatus();
 }
-/*--为view添加事件过滤器--*/
+    /*--为view添加事件过滤器--*/
     view->installEventFilter(this);
 }
 
@@ -178,6 +172,17 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event){
         else
             return QMainWindow::eventFilter(object, event);
     }
+    else if(game->getStatus() == gamecontroller::gameStatus::gaming
+            and object == view)
+    {
+        QKeyEvent* key = dynamic_cast<QKeyEvent*>(event);
+        if(key!=nullptr and key->type()==QEvent::KeyPress)
+        {
+            game->handlePress(key);
+            return true;
+        }else
+            return QMainWindow::eventFilter(object, event);
+    }
     else
         return QMainWindow::eventFilter(object, event);
 }
@@ -192,9 +197,14 @@ void MainWindow::initBackground(){
 }
 
 void MainWindow::setView(){
-    view->resize((column)*TILE_WIDTH,(row)*TILE_WIDTH);
+    view->resize((column)*TILE_WIDTH+1,(row)*TILE_WIDTH+1);
     scene->setSceneRect(0,0,(column)*TILE_WIDTH,(row)*TILE_WIDTH);
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->ensureVisible(scene->sceneRect());
+}
+
+void MainWindow::setDisplayTime(int time)
+{
+    ui->timeDisplay->setNum(time);
 }

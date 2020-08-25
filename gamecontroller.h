@@ -34,12 +34,17 @@ public:
     void end();
 
     void handleClick(Pii a);
+    void handlePress(QKeyEvent*);
+    void handleSnakeCollide();
 
     //bool eventFilter(QObject *watched, QEvent *event) override;
     gamecontroller::gameStatus getStatus(){return status;}
     Pii view_to_img(Pii view){
         return qMakePair(1+view.first/TILE_WIDTH,1+view.second/TILE_WIDTH);
     }
+
+public slots:
+    void advance();
 
 signals:
 
@@ -51,8 +56,9 @@ private:
 
     MainWindow* father;
     food* apple;
-    snake* snake;
+    snake* Snake;
     QMap<Pii,obstacles*> barrier;
+    int time = 0;
 };
 
 #endif // GAMECONTROLLER_H

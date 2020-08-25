@@ -3,6 +3,7 @@
 
 #include "universal_functions.h"
 #include <QPair>
+#include <QDebug>
 
 typedef QPair<int,int> Pii;
 
@@ -12,6 +13,9 @@ const int FOOD_R = 25;
 
 const int row = 20;
 const int column = 20;
+
+const Pii startHead = qMakePair(5,5);
+const Pii startBody = qMakePair(5,6);
 /*
 
 
