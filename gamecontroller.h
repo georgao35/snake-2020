@@ -25,17 +25,22 @@ public:
     explicit gamecontroller(QObject *parent = nullptr,QGraphicsScene* _scene = nullptr)=delete;
     explicit gamecontroller(QObject *parent = nullptr,QGraphicsScene* _scene = nullptr
             ,MainWindow* _father=nullptr);
+
     void pause();
     void start();
     void restart();
     void load();
     void save();
     void resume();
-    void end();
+    void gamelost();
 
     void handleClick(Pii a);
     void handlePress(QKeyEvent*);
+
     void handleSnakeCollide();
+    void handleSnakeEating();
+
+    void setNewFood();
 
     //bool eventFilter(QObject *watched, QEvent *event) override;
     gamecontroller::gameStatus getStatus(){return status;}

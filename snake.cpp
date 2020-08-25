@@ -56,7 +56,6 @@ void snake::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
 void snake::setDirection(movingDirection a)
 {
-    qDebug()<<direction<<a;
     if(a == left and direction == right)
         return;
     else if(a == right and direction == left)
@@ -72,25 +71,23 @@ void snake::advance(int phase)
 {
     if(phase == 0)
         return ;
-    else if(toGrow){
+    else if(toGrow -- > 0){//一步长一个单位，而不是一次性全长完
         body.push_back(head);
-        while(toGrow-- > 0){
-            switch (direction) {
-            case up:
-                head.second--;
-                break;
-            case down:
-                head.second++;
-                break;
-            case left:
-                head.first--;
-                break;
-            case right:
-                head.first++;
-                break;
-            default:
-                break;
-            }
+        switch (direction) {
+        case up:
+            head.second--;
+            break;
+        case down:
+            head.second++;
+            break;
+        case left:
+            head.first--;
+            break;
+        case right:
+            head.first++;
+            break;
+        default:
+            break;
         }
     }
     else{
@@ -145,3 +142,7 @@ void snake::handleItems()
     }
 }
 */
+
+void snake::eatFood(){
+    toGrow = 3;
+}

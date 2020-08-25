@@ -3,11 +3,11 @@
 #include <QString>
 #include <QPainter>
 
-food::food(Pii pos){
+food::food(Pii pos):x(pos.first),y(pos.second){
     setPos(pos.first*TILE_WIDTH-TILE_WIDTH,pos.second*TILE_WIDTH-TILE_WIDTH);
 }
 
-food::food(int x,int y){
+food::food(int x,int y):x(x),y(y){
     setPos((x-1)*TILE_WIDTH,(y-1)*TILE_WIDTH);
 }
 
@@ -18,7 +18,9 @@ QRectF food::boundingRect() const
 
 QPainterPath food::shape() const
 {
-    return QPainterPath();
+    QPainterPath path;
+    path.addRect(0,0,TILE_WIDTH,TILE_WIDTH);
+    return path;
 }
 
 void food::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

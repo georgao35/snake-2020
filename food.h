@@ -7,6 +7,7 @@
 class food:public QGraphicsItem
 {
     Q_CLASSINFO("author","John Doe");
+    int x,y;
 public:
     food()=delete ;
     food(Pii pos);
@@ -20,6 +21,9 @@ public:
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
+    Pii currentPos(){
+        return qMakePair(x,y);
+    }
 };
 
 #endif // FOOD_H

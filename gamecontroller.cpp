@@ -4,6 +4,8 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QMessageBox>
+#include <QRandomGenerator>
 
 /*gamecontroller::gamecontroller(QObject *parent,QGraphicsScene* _scene) :
     QObject(parent),
@@ -17,17 +19,17 @@ gamecontroller::gamecontroller(QObject *parent,QGraphicsScene* _scene
     QObject(parent),
     scene(_scene),
     father(_father),
-    apple(nullptr)
+    apple(new food(5,5))
 {
+    /*--开始计时器，但尚未与其他的槽函数相连--*/
     timer = new QTimer(this);
-    timer->start(1000);
+    timer->start(1000/3);
     //connect(time,&QTimer::timeout,father,&MainWindow::setDisplayTime);
     //scene->installEventFilter(this);
     //apple = new food(3,3);
     //scene->addItem(apple);
     Snake = new snake(qMakePair(4,4),qMakePair(4,5));
     scene->addItem(Snake);
-    scene->advance();
 }
 
 void gamecontroller::pause(){
@@ -40,10 +42,11 @@ void gamecontroller::pause(){
 void gamecontroller::start(){
     status = gameStatus::gaming;
     father->setButtonsStatus();
+    setNewFood();
     connect(timer,&QTimer::timeout,this,&gamecontroller::advance);
     qDebug()<<"start a game\n";
 }
-
+//文件读入输出
 void gamecontroller::load(){
     status = gameStatus::paused;
     father->setButtonsStatus();
@@ -58,9 +61,8 @@ void gamecontroller::restart(){
     status = initialized;
     father->setButtonsStatus();
     scene->clear();
-    if(apple!=nullptr)
-        delete apple;
     Snake = new snake(startHead,startBody);
+    apple = nullptr;
     if(!barrier.empty())
         barrier.clear();
     disconnect(timer,&QTimer::timeout,this,&gamecontroller::advance);
@@ -70,7 +72,7 @@ void gamecontroller::restart(){
     scene->addItem(Snake);
     qDebug()<<"restart a new game";
 }
-
+//继续好像可以和start用同一个函数
 void gamecontroller::resume(){
     status = gameStatus::gaming;
     father->setButtonsStatus();
@@ -97,7 +99,6 @@ void gamecontroller::handleClick(Pii a)
 
 void gamecontroller::handlePress(QKeyEvent * key)
 {
-    qDebug()<<"handle press";
     switch (key->key()) {
     case Qt::Key_Up:
         Snake->setDirection(snake::movingDirection::up);
@@ -115,15 +116,75 @@ void gamecontroller::handlePress(QKeyEvent * key)
         break;
     }
 }
+//结束
+void gamecontroller::gamelost(){
+    /*--设置状态--*/
+    status = ended;
+    disconnect(timer,&QTimer::timeout,this,&gamecontroller::advance);
+    father->setButtonsStatus();
+    //scene->clear();
+    /*--调整时间--*/
+    time = 0;
+    father->setDisplayTime();
+    /*--弹窗--*/
+    if( QMessageBox::information(nullptr,tr("游戏失败"),
+                         tr("游戏失败,是否直接重新开始"),QMessageBox::No|QMessageBox::Yes,
+                                 QMessageBox::Yes) == QMessageBox::Yes)
+    {
+        QTimer::singleShot(0,this,&gamecontroller::restart);
+    }
+    //qDebug()<<"游戏结束";
+}
 
 void gamecontroller::advance()
 {
     scene->advance();
-    scene->update();
     father->setDisplayTime(++time);
+    handleSnakeCollide();
+    scene->update();
 }
 
 void gamecontroller::handleSnakeCollide()
 {
+    qDebug()<<Snake->body<<Snake->head;
+    if(Snake->head.first < 1 or Snake->head.first > column
+            or Snake->head.second < 1 or Snake->head.second > row)
+    {
+        QTimer::singleShot(0,this,&gamecontroller::gamelost);
+        //gamelost();出界，报废
+    }
+    else if(Snake->head == apple->currentPos()){
+        QTimer::singleShot(0,this,&gamecontroller::handleSnakeEating);//换新的苹果，并且让蛇增长
+    }
+    else if(Snake->body.contains(Snake->head)){
+        QTimer::singleShot(0,this,&gamecontroller::gamelost);//碰到自己，报废
+    }
+    else{
+        auto items = Snake->collidingItems();
+        foreach(QGraphicsItem* item, items){
+            food* apple = dynamic_cast<food*>(item);
+            obstacles* obstacle = dynamic_cast<obstacles*>(item);
+            if(apple!=nullptr)
+                QTimer::singleShot(0,this,&gamecontroller::handleSnakeEating);//换新的苹果，并且让蛇增长
+            else if(obstacle!=nullptr)
+                QTimer::singleShot(0,this,&gamecontroller::gamelost);//碰到墙，报废
+            else {
+                return;//碰到自己了
+            }
+        }
+    }
+}
 
+void gamecontroller::handleSnakeEating(){
+    Snake->eatFood();
+    setNewFood();
+}
+
+void gamecontroller::setNewFood(){
+    int x = (QRandomGenerator::global()->generate())%column+1;
+    int y = (QRandomGenerator::global()->generate())%row+1;
+    if(apple != nullptr)
+        scene->removeItem(apple);
+    apple = new food(x,y);
+    scene->addItem(apple);
 }

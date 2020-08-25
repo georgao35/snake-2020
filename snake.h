@@ -23,13 +23,15 @@ public:
     void advance(int phase) override;
     void setDirection(movingDirection a);
     void move();
-    void handleItems();
+    void eatFood();
+    //void handleItems();
     QVector<Pii> getBodyPos(){
         QVector<Pii> tmp = body;
         tmp.push_back(head);
         return tmp;
     }
     //void keyPressEvent(QKeyEvent *event) override;
+    friend class gamecontroller;
 private:
     Pii head;
     QVector<Pii> body;
