@@ -146,7 +146,6 @@ void gamecontroller::advance()
 
 void gamecontroller::handleSnakeCollide()
 {
-    qDebug()<<Snake->body<<Snake->head;
     if(Snake->head.first < 1 or Snake->head.first > column
             or Snake->head.second < 1 or Snake->head.second > row)
     {
@@ -157,21 +156,12 @@ void gamecontroller::handleSnakeCollide()
         QTimer::singleShot(0,this,&gamecontroller::handleSnakeEating);//换新的苹果，并且让蛇增长
     }
     else if(Snake->body.contains(Snake->head)){
+        qDebug()<<"body crash";
         QTimer::singleShot(0,this,&gamecontroller::gamelost);//碰到自己，报废
     }
-    else{
-        auto items = Snake->collidingItems();
-        foreach(QGraphicsItem* item, items){
-            food* apple = dynamic_cast<food*>(item);
-            obstacles* obstacle = dynamic_cast<obstacles*>(item);
-            if(apple!=nullptr)
-                QTimer::singleShot(0,this,&gamecontroller::handleSnakeEating);//换新的苹果，并且让蛇增长
-            else if(obstacle!=nullptr)
-                QTimer::singleShot(0,this,&gamecontroller::gamelost);//碰到墙，报废
-            else {
-                return;//碰到自己了
-            }
-        }
+    else if(barrier.contains(Snake->head)){
+        qDebug()<<"Wall crash";
+        QTimer::singleShot(0,this,&gamecontroller::gamelost);
     }
 }
 
@@ -183,6 +173,7 @@ void gamecontroller::handleSnakeEating(){
 void gamecontroller::setNewFood(){
     int x = (QRandomGenerator::global()->generate())%column+1;
     int y = (QRandomGenerator::global()->generate())%row+1;
+    qDebug()<<x<<y;
     if(apple != nullptr)
         scene->removeItem(apple);
     apple = new food(x,y);

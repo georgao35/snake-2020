@@ -7,12 +7,12 @@
 
 typedef QPair<int,int> Pii;
 
-const int TILE_WIDTH = 30;
+const int TILE_WIDTH = 20;
 
 const int FOOD_R = 25;
 
-const int row = 20;
-const int column = 20;
+const int row = 40;
+const int column = 40;
 
 const Pii startHead = qMakePair(5,5);
 const Pii startBody = qMakePair(5,6);
