@@ -16,6 +16,8 @@ const int column = 40;
 
 const Pii startHead = qMakePair(5,5);
 const Pii startBody = qMakePair(5,6);
+
+const int speed = 1000/5;
 /*
 
 

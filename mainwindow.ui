@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1095</width>
-    <height>925</height>
+    <width>975</width>
+    <height>894</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>10</x>
       <y>40</y>
       <width>800</width>
       <height>800</height>
@@ -27,8 +27,8 @@
    <widget class="QLabel" name="timeDisplay">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>40</y>
+      <x>840</x>
+      <y>90</y>
       <width>61</width>
       <height>61</height>
      </rect>
@@ -43,8 +43,8 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>930</x>
-      <y>200</y>
+      <x>810</x>
+      <y>140</y>
       <width>160</width>
       <height>251</height>
      </rect>
@@ -122,7 +122,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1095</width>
+     <width>975</width>
      <height>22</height>
     </rect>
    </property>

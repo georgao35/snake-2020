@@ -23,7 +23,7 @@ gamecontroller::gamecontroller(QObject *parent,QGraphicsScene* _scene
 {
     /*--开始计时器，但尚未与其他的槽函数相连--*/
     timer = new QTimer(this);
-    timer->start(1000/3);
+    timer->start(speed);
     //connect(time,&QTimer::timeout,father,&MainWindow::setDisplayTime);
     //scene->installEventFilter(this);
     //apple = new food(3,3);
@@ -156,11 +156,9 @@ void gamecontroller::handleSnakeCollide()
         QTimer::singleShot(0,this,&gamecontroller::handleSnakeEating);//换新的苹果，并且让蛇增长
     }
     else if(Snake->body.contains(Snake->head)){
-        qDebug()<<"body crash";
         QTimer::singleShot(0,this,&gamecontroller::gamelost);//碰到自己，报废
     }
     else if(barrier.contains(Snake->head)){
-        qDebug()<<"Wall crash";
         QTimer::singleShot(0,this,&gamecontroller::gamelost);
     }
 }
