@@ -4,11 +4,20 @@
 #include <QPainter>
 
 food::food(Pii pos):x(pos.first),y(pos.second){
+    qDebug()<<x<<y;
     setPos(pos.first*TILE_WIDTH-TILE_WIDTH,pos.second*TILE_WIDTH-TILE_WIDTH);
 }
 
 food::food(int x,int y):x(x),y(y){
     setPos((x-1)*TILE_WIDTH,(y-1)*TILE_WIDTH);
+}
+
+food::food(QString src){
+    qDebug()<<string_to_pii(src);
+    Pii pos = string_to_pii(src);
+    x = pos.first; y = pos.second;
+    setPos(pos.first*TILE_WIDTH-TILE_WIDTH,pos.second*TILE_WIDTH-TILE_WIDTH);
+
 }
 
 QRectF food::boundingRect() const

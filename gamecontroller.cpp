@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 #include <QMessageBox>
 #include <QRandomGenerator>
+#include <QFileDialog>
 
 /*gamecontroller::gamecontroller(QObject *parent,QGraphicsScene* _scene) :
     QObject(parent),
@@ -28,7 +29,7 @@ gamecontroller::gamecontroller(QObject *parent,QGraphicsScene* _scene
     //scene->installEventFilter(this);
     //apple = new food(3,3);
     //scene->addItem(apple);
-    Snake = new snake(qMakePair(4,4),qMakePair(4,5));
+    Snake = new snake(startHead,startBody);
     scene->addItem(Snake);
 }
 
@@ -36,7 +37,7 @@ void gamecontroller::pause(){
     status = gameStatus::paused;
     disconnect(timer,&QTimer::timeout,this,&gamecontroller::advance);
     father->setButtonsStatus();
-    qDebug()<<"entering pause\n";
+    //qDebug()<<"entering pause\n";
 }
 
 void gamecontroller::start(){
@@ -44,17 +45,92 @@ void gamecontroller::start(){
     father->setButtonsStatus();
     setNewFood();
     connect(timer,&QTimer::timeout,this,&gamecontroller::advance);
-    qDebug()<<"start a game\n";
+    //qDebug()<<"start a game\n";
 }
 //文件读入输出
 void gamecontroller::load(){
-    status = gameStatus::paused;
-    father->setButtonsStatus();
-    qDebug()<<"loading a saved game\n";
+    QString fileName = QFileDialog::getOpenFileName();
+    if(!fileName.isEmpty()){
+        QFile file(fileName);
+        if(!file.open(QIODevice::ReadOnly |QIODevice::Text)){
+            QMessageBox::warning(nullptr,tr("warning"),tr("无法打开"));
+        }
+        else{
+            scene->clear();
+            QTextStream in(&file);
+            /*-蛇部分-*/
+            in.readLine();
+            QString head = in.readLine();//head
+            head = head.split(QLatin1Char(' '))[1];
+            QString body_buffer = in.readLine();//body
+            QStringList body = body_buffer.split(QLatin1Char(' '),Qt::SkipEmptyParts);//没加要求使得最后多了一个空字符串，导致转换坐标时出现问题
+            body.pop_front();
+            QString direc = in.readLine();
+            direc = direc.split(QLatin1Char(' '))[1];
+            Snake = new snake(head,body,direc);
+            scene->addItem(Snake);
+            in.readLine();
+             /*-食物部分-*/
+            in.readLine();
+            QString food_bf = in.readLine();
+            food_bf = food_bf.split(QLatin1Char(' '),Qt::SkipEmptyParts)[1];
+            apple = new food(food_bf);
+            scene->addItem(apple);
+            qDebug()<<apple->currentPos()<<apple->pos();
+            in.readLine();
+            /*-障碍部分-*/
+            in.readLine();
+            QString buffer_for_obstacles = in.readLine();
+            QStringList buffer_list_bostacles = buffer_for_obstacles.split(QLatin1Char(' '),Qt::SkipEmptyParts);
+            buffer_list_bostacles.pop_front();
+            if(!buffer_list_bostacles.isEmpty()){
+                foreach(QString obstacle, buffer_list_bostacles){
+                    obstacles* ob = new obstacles(obstacle);
+                    barrier.insert(qMakePair(ob->currentPos().first,ob->currentPos().second),ob);
+                    scene->addItem(ob);
+                }
+            }
+            in.readLine();
+            /*-时间部分-*/
+            QString time1 = in.readLine();
+            time1 = time1.split(QLatin1Char(' '))[1];
+            time = time1.toInt();
+            father->setDisplayTime(time);
+        }
+        status = gameStatus::paused;
+        father->setButtonsStatus();
+        scene->update();
+        //qDebug()<<"loading a saved game\n";
+    }else{
+        QMessageBox::warning(nullptr,tr("warning"),tr("未选择文件"));
+    }
 }
 
 void gamecontroller::save(){
-    qDebug()<<"saving the game\n";
+    QString fileName = QFileDialog::getSaveFileName();
+    if(!fileName.isEmpty()){
+        QFile file(fileName);
+        if(!file.open(QIODevice::ReadWrite | QIODevice::Text)){
+            QMessageBox::warning(nullptr,tr("warning"),tr("无法打开"));
+            return ;
+        }
+        else{
+            QTextStream out(&file);
+            out<<"Snake:"<<Qt::endl<<"head@ ("<<Snake->head.first<<","<<Snake->head.second<<")"<<Qt::endl<<"body@ ";
+            foreach(Pii point, Snake->body){
+                out<<"("<<point.first<<","<<point.second<<") ";
+            }
+            out<<Qt::endl<<"direction: "<<Snake->direction<<Qt::endl;
+            out<<Qt::endl<<"Food:"<<Qt::endl<<"food@ ("<<apple->currentPos().first<<","<<apple->currentPos().second<<")"<<Qt::endl;
+            out<<Qt::endl<<"Obstacles:"<<Qt::endl<<"obstacles@ ";
+            foreach(obstacles* obstacle, barrier){
+                out<<"("<<obstacle->currentPos().first<<","<<obstacle->currentPos().second<<") ";
+            }
+            out<<Qt::endl<<Qt::endl<<"Time "<<time;
+        }
+    }else{
+        QMessageBox::warning(nullptr,tr("warning"),tr("未选择保存文件"));
+    }
 }
 
 void gamecontroller::restart(){
@@ -70,7 +146,6 @@ void gamecontroller::restart(){
     time = 0;
 
     scene->addItem(Snake);
-    qDebug()<<"restart a new game";
 }
 //继续好像可以和start用同一个函数
 void gamecontroller::resume(){

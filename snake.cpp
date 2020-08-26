@@ -16,6 +16,27 @@ snake::snake(Pii _head,Pii _body){
     }
 }
 
+snake::snake(QString _head, QStringList _body, QString _direction){
+    head = string_to_pii(_head);
+    foreach(QString _bodyPart,_body){
+        body.push_back(string_to_pii(_bodyPart));
+    }
+    switch (_direction.toInt()) {
+    case 0:
+        direction = up;
+        break;
+    case 1:
+        direction = down;
+        break;
+    case 2:
+        direction = left;
+        break;
+    case 3:
+        direction = right;
+        break;
+    }
+}
+
 QRectF snake::boundingRect() const
 {
     int minX = head.first,minY = head.second,maxX = head.first,maxY = head.second;

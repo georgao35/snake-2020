@@ -23,14 +23,14 @@
     实现了作业要求的所有功能
     \subsection{游戏界面与各个状态}
 
-    \begin{figure}[htb]
+    \begin{figure}[h]
         \centering
         \includegraphics[scale = 0.2]{texsrc/界面.png}
         \includegraphics[scale = 0.4]{texsrc/菜单栏.png}
         \caption{未开始状态的界面}
         \label{intialized}
     \end{figure}
-    \begin{figure}[htb]
+    \begin{figure}[h]
         \centering
         \includegraphics[scale = 0.2]{texsrc/界面+wall.png}
         \caption{点击网格，增加障碍}
@@ -44,7 +44,7 @@
     默认运动方向向上。同时在此阶段，可以点击方格来设置障碍，障碍以与各自同样大小的灰色正方形表示（如图2）；在增加后，也支持再次点击以消除障碍。
     \par 此状态点击载入游戏可以载入已保存的游戏文件，加载此游戏并进入暂停状态。
 
-    \begin{figure}[htb]
+    \begin{figure}[h]
         \centering
         \includegraphics[scale = 0.2]{texsrc/开始游戏.png}
         \caption{游戏状态}
@@ -54,7 +54,7 @@
     在此状态下，只有退出游戏、暂停游戏两个功能可以使用。在吃完苹果后，贪吃蛇将延长3个格，此时尾部不变。
     \par 点击暂停游戏后将进入暂停状态。
 
-    \begin{figure}[htb]
+    \begin{figure}[h]
         \centering
         \includegraphics[scale = 0.2]{texsrc/界面paused.png}
         \caption{暂停状态}
@@ -105,7 +105,7 @@
         bool eventFilter(QObject* object, QEvent* event) override;
     \end{lstlisting}
     \subsection{gamecontroller类}
-    gamecontroller类负责控制整个游戏，实现了控制各类的函数，并且设定了状态的枚举类
+    gamecontroller类负责控制整个游戏，记录当前游戏状态，实现了游戏的控制函数和保存方法
     \paragraph{数据成员}
     \begin{lstlisting}
         gameStatus status = gameStatus::initialized;//游戏当前状态
