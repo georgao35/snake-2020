@@ -7,6 +7,8 @@
 #include <QMessageBox>
 #include <QRandomGenerator>
 #include <QFileDialog>
+#include <QTime>
+#include <QDateTime>
 
 /*gamecontroller::gamecontroller(QObject *parent,QGraphicsScene* _scene) :
     QObject(parent),
@@ -58,7 +60,7 @@ void gamecontroller::load(){
         else{
             scene->clear();
             QTextStream in(&file);
-            /*-蛇部分-*/
+            /*-蛇部分读取信息-*/
             in.readLine();
             QString head = in.readLine();//head
             head = head.split(QLatin1Char(' '))[1];
@@ -116,6 +118,7 @@ void gamecontroller::save(){
         }
         else{
             QTextStream out(&file);
+            QDataStream out1(&file);
             out<<"Snake:"<<Qt::endl<<"head@ ("<<Snake->head.first<<","<<Snake->head.second<<")"<<Qt::endl<<"body@ ";
             foreach(Pii point, Snake->body){
                 out<<"("<<point.first<<","<<point.second<<") ";

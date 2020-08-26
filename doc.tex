@@ -4,33 +4,36 @@
 \usepackage{amsmath,amssymb}
 \usepackage{parskip}
 \usepackage{graphicx}
+\usepackage{float}
 \usepackage{indentfirst}%设置锁进
-\usepackage[top=2.5cm, left=3cm, right=3cm, bottom=4.0cm]{geometry}
+\usepackage[top=2.5cm, left=3cm, right=3cm, bottom=3.0cm]{geometry}
 
-\title{设计文稿}
-\author{计92 高敬越 2019011230}
+
 
 \setlength{\parindent}{2em}
 
 \begin{document}
+\title{设计文稿}
+\author{计92 高敬越 2019011230}
+\date{ }
     \maketitle
+    \vspace{-2em}
     \section{环境}
     \begin{enumerate}
         \item 系统： macOS 10.15.6
         \item Qt版本：Qt 5.15.0 clang 64bit 
     \end{enumerate}
     \section{功能介绍}
-    实现了作业要求的所有功能
+    实现了作业要求的功能
     \subsection{游戏界面与各个状态}
-
-    \begin{figure}[h]
+    \begin{figure}[H]
         \centering
         \includegraphics[scale = 0.2]{texsrc/界面.png}
         \includegraphics[scale = 0.4]{texsrc/菜单栏.png}
         \caption{未开始状态的界面}
         \label{intialized}
     \end{figure}
-    \begin{figure}[h]
+    \begin{figure}[H]
         \centering
         \includegraphics[scale = 0.2]{texsrc/界面+wall.png}
         \caption{点击网格，增加障碍}
@@ -44,7 +47,7 @@
     默认运动方向向上。同时在此阶段，可以点击方格来设置障碍，障碍以与各自同样大小的灰色正方形表示（如图2）；在增加后，也支持再次点击以消除障碍。
     \par 此状态点击载入游戏可以载入已保存的游戏文件，加载此游戏并进入暂停状态。
 
-    \begin{figure}[h]
+    \begin{figure}[H]
         \centering
         \includegraphics[scale = 0.2]{texsrc/开始游戏.png}
         \caption{游戏状态}
@@ -54,7 +57,7 @@
     在此状态下，只有退出游戏、暂停游戏两个功能可以使用。在吃完苹果后，贪吃蛇将延长3个格，此时尾部不变。
     \par 点击暂停游戏后将进入暂停状态。
 
-    \begin{figure}[h]
+    \begin{figure}[H]
         \centering
         \includegraphics[scale = 0.2]{texsrc/界面paused.png}
         \caption{暂停状态}
@@ -63,8 +66,41 @@
     \paragraph{暂停状态} 当在游戏过程中选择暂停或者重新载入了已有的游戏后，将进入暂停状态（图4）。此时蛇将停止移动，计时器也停止计时。此时开始游戏、暂停游戏、载入游戏三个功能
     将无法使用。
     \par 此时点击继续游戏将进入游戏状态，继续工作；此时点击保存游戏可以导出此游戏，保存为.txt文件，文件格式见下。
+    \paragraph{终止状态}
+    当蛇离开边界、碰到障碍、碰到自己时，游戏将会停止。此时会弹出弹窗（图5）。如果在弹窗中选择了Yes选项，则界面将直接转移到未开始状态。
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale = 0.5]{texsrc/游戏结束弹窗.png}
+        \caption{游戏结束弹窗}
+        \label{messagebox}
+    \end{figure}
+    如果选择了No，则将进入终止状态页面（图6）
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale = 0.2]{texsrc/终止状态界面.png}
+        \caption{终止状态}
+        \label{ended}
+    \end{figure}
+    实现了终止页面的全部功能，同时也只有退出游戏和重新开始两个按键可用
+    \subsection{保存游戏}
+    点击保存游戏后，将弹出窗口以选择保存文件路径，程序将保存一个.txt文件以储存当前的游戏状态
+    \paragraph{文件格式}例如
+    \begin{lstlisting}
+        Snake:
+        head@ (7,17)
+        body@ (7,27) (7,26) (7,25) (7,24) (7,23) (7,22) (7,21) (7,20) (7,19) (7,18) 
+        direction: 0
 
-    \subsection{游戏保存文件}
+        Food:
+        food@ (13,19)
+
+        Obstacles:
+        obstacles@ (20,23) (20,22) 
+
+        Time 102
+    \end{lstlisting}
+    \par 用括号扩起来的二元组代表格子（40*40）的坐标，多个坐标时两个坐标用空格隔开；从上到下分别储存了蛇、食物、障碍以及当前时间点的信息。
+    \par 在未开始状态中点击载入游戏，选择储存好的文件打开，就可以加载已保存的游戏；此时将进入暂停状态。
 
     \section{程序架构}
     \subsection{实现方案}
@@ -132,7 +168,8 @@
         void handleClick(Pii a);//处理鼠标点击的方法
         void handlePress(QKeyEvent*);//处理键盘按键的方法
         /*-游戏运行中调用的方法-*/
-        void handleSnakeCollide();//在刷新场景前判断蛇的碰撞，并进行相应的处理
+        void handleSnakeCollide();
+        //在刷新场景前判断蛇的碰撞，并进行相应的处理
         void handleSnakeEating();//当蛇吃苹果后的方法
         void setNewFood();//放置一个新的水果
         gamecontroller::gameStatus getStatus();//返回当前游戏的状态
