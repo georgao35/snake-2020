@@ -1,6 +1,11 @@
 <RCC>
     <qresource prefix="/pic">
         <file alias="food.png">src/apple.png</file>
+        <file alias="restart">src/1486348535-music-square-stop-play-pause_80450.png</file>
+        <file alias="quit">src/power-symbol-inside-a-circle_icon-icons.com_56904.png</file>
+        <file alias="load">src/3643772-archive-archives-document-folder-open_113445.png</file>
+        <file alias="save">src/3643774-disk-floppy-save-saveas-saved-saving_113433.png</file>
+        <file alias="resume">src/1486348532-music-play-pause-control-go-arrow_80458.png</file>
+        <file alias="pause">src/1486348534-music-pause-stop-control-play_80459.png</file>
     </qresource>
-    <qresource prefix="/"/>
 </RCC>

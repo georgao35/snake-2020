@@ -25,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
     start -> setText(tr("&开始游戏"));
     QMenu* preparation = menuBar()->addMenu("操作");
     preparation->addAction(start);
-    addToolBar(tr("start"))->addAction(start);
+    QToolBar* a = addToolBar(tr("start"));
+    a->addAction(start);
     connect(ui->startButton,&QPushButton::clicked,start,&QAction::trigger);
     connect(start,&QAction::triggered,game,&gamecontroller::start);
     /*--退出游戏--*/
@@ -33,7 +34,9 @@ MainWindow::MainWindow(QWidget *parent)
     quit -> setText(tr("&退出游戏"));
     quit -> setShortcut(QKeySequence::Quit);
     preparation->addAction(quit);
-    addToolBar(tr("quit"))->addAction(quit);
+    //addToolBar(tr("quit"))->addAction(quit);
+    a->addAction(quit);
+    quit->setIcon(QIcon(tr(":/pic/quit")));
     connect(ui->quitButton,&QPushButton::clicked,quit,&QAction::trigger);
     connect(quit,&QAction::triggered,QApplication::instance(),&QApplication::quit);
     /*--载入游戏--*/
@@ -41,7 +44,9 @@ MainWindow::MainWindow(QWidget *parent)
     load -> setText(tr("载入游戏"));
     QMenu* saving = menuBar()->addMenu("保存/载入");
     saving->addAction(load);
-    addToolBar(tr("load"))->addAction(load);
+    QToolBar* c = addToolBar(tr("存档"));
+    c->addAction(load);
+    load->setIcon(QIcon(tr(":/pic/load")));
     connect(ui->loadButton,&QPushButton::clicked,load,&QAction::trigger);
     connect(load,&QAction::triggered,game,&gamecontroller::load);
     /*--保存游戏，输出文件--*/
@@ -49,29 +54,34 @@ MainWindow::MainWindow(QWidget *parent)
     save -> setText(tr("&保存游戏"));
     save ->setShortcut(QKeySequence::SaveAs);
     saving->addAction(save);
-    addToolBar(tr("save"))->addAction(save);
+    c->addAction(save);
+    save->setIcon(QIcon(tr(":/pic/save")));
     connect(ui->saveButton,&QPushButton::clicked,save,&QAction::trigger);
     connect(save,&QAction::triggered,game,&gamecontroller::save);
     /*--暂停重启游戏--*/
     pause = new QAction(this);
     pause->setText(tr("&暂停游戏"));
     QMenu* gaming = menuBar()->addMenu("游戏");
+    QToolBar* b = addToolBar(tr("游戏"));
     gaming->addAction(pause);
-    addToolBar("pause")->addAction(pause);
+    b->addAction(pause);
+    pause->setIcon(QIcon(tr(":/pic/pause")));
     connect(ui->pauseButton,&QPushButton::clicked,pause,&QAction::trigger);
     connect(pause,&QAction::triggered,game,&gamecontroller::pause);
     /*--继续游戏--*/
     unpause = new QAction(this);
-    unpause->setText(tr("&继续游戏"));
+    unpause->setText(tr("继续游戏"));
     gaming->addAction(unpause);
-    addToolBar("continue")->addAction(unpause);
+    b->addAction(unpause);
+    unpause->setIcon(QIcon(tr(":/pic/resume")));
     connect(ui->continueButton,&QPushButton::clicked,unpause,&QAction::trigger);
     connect(unpause,&QAction::triggered,game,&gamecontroller::resume);
     /*--新游戏--*/
     restart = new QAction(this);
     restart ->setText(tr("新游戏"));
     gaming ->addAction(restart);
-    addToolBar(tr("new game"))->addAction(restart);
+    b->addAction(restart);
+    restart->setIcon(QIcon(tr(":/pic/restart")));
     connect(ui->restartButton,&QPushButton::clicked,restart,&QAction::trigger);
     //connect(restart,&QAction::triggered,game,&gamecontroller::restart);
     connect(restart,&QAction::triggered,game,&gamecontroller::restart);
