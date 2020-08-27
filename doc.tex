@@ -23,7 +23,7 @@
         \item 系统： macOS 10.15.6
         \item Qt版本：Qt 5.15.0 clang 64bit 
     \end{enumerate}
-    \section{功能介绍}
+    \section{实现功能}
     实现了作业要求的功能
     \subsection{游戏界面与各个状态}
     \begin{figure}[H]
@@ -106,8 +106,9 @@
     \subsection{实现方案}
     程序实现了5个类：MainWindow、gamecontroller、food、obstacles、snake。其中MainWindow负责显示界面，
     gamecontroller主要负责游戏的逻辑和控制，并且记录了当前用户所处的状态，
-    food、obstacles、snake三类分别实现了食物、障碍、蛇的运动记录、绘制等功能。
+    food、obstacles、snake三类基于QGraphics，分别实现了食物、障碍、蛇的运动记录、绘制等功能。
     在程序内部储存位置时，都以行、列数的虚拟坐标进行储存，并定义了由行、列坐标与scene中坐标互相转化的方法。
+    \par 在设计中我发现对于位置的确定、View的大小等方面的调试非常精妙，需要仔细的确定。
     \subsection{MainWindow类}
     MainWindow类就是创建程序时自动创建的主窗口类，主要负责进行程序界面的设计并实现有关组件展示内容、样式的方法。
     \paragraph{数据成员}
@@ -176,6 +177,19 @@
         advance();//每次更新当前状态的方法
     \end{lstlisting}
     \subsection{food、obstacles、snake类}
-    这三个类是场景中的物体类，继承自QGraphicsItem，重新实现了画图函数；
+    这三个类是场景中的物体类，继承自QGraphicsItem，重新实现了画图函数；food和obstacles的实现较为简单；
     其中snake类还重新实现了advance()函数，用以更新snake对象的位置，实现移动功能；同时也实现了增长的功能。
+    \subsubsection{snake类}
+    snake类中的数据成员
+    \begin{lstlisting}
+        enum movingDirection{
+        up,down,left,right,
+        };//运动方向的枚举类
+        Pii head;//蛇的头
+        QVector<Pii> body;//蛇的其他部分
+        movingDirection direction = up;//蛇的运动防线
+        int toGrow;//蛇是否要生长以及生长的格子数
+    \end{lstlisting}
+    当蛇更新后，头的位置将加入body，body中的最后一段（vector中的第一个元素）将被弹出，表现出移动的效果；
+    若toGrow变量不为零，则将进行生长，此时只将head放入body而不弹出，实现了尾部不动的生长。
 \end{document}
