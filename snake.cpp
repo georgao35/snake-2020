@@ -64,7 +64,7 @@ void snake::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 {
     painter->save();
 
-    painter->setPen(Qt::green);
+    painter->setPen(Qt::white);
     painter->setBrush(QBrush(Qt::green));
     painter->drawPath(shape());
 
