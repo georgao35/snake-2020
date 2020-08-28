@@ -247,8 +247,13 @@ void gamecontroller::handleSnakeEating(){
 }
 
 void gamecontroller::setNewFood(){
+
     int x = (QRandomGenerator::global()->generate())%column+1;
     int y = (QRandomGenerator::global()->generate())%row+1;
+    while(barrier.contains(qMakePair(x,y)) or Snake->getBodyPos().contains(qMakePair(x,y))){
+        x = (QRandomGenerator::global()->generate())%column+1;
+        y = (QRandomGenerator::global()->generate())%row+1;
+    }
     qDebug()<<x<<y;
     if(apple != nullptr)
         scene->removeItem(apple);
