@@ -9,7 +9,7 @@ class snake:public QGraphicsItem
 
 public:
     enum movingDirection{
-        up,down,left,right,
+        up,down,left,right,null,
     };
 
     snake();
@@ -50,9 +50,10 @@ public:
 private:
     Pii head;
     QVector<Pii> body;
-    movingDirection direction = up;
+    movingDirection direction = null;
 
     int toGrow = 0;
+    bool turned = false;
 };
 
 #endif // SNAKE_H

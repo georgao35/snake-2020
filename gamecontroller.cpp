@@ -217,7 +217,8 @@ void gamecontroller::gamelost(){
 void gamecontroller::advance()
 {
     scene->advance();
-    father->setDisplayTime(++time);
+    if(Snake->direction != snake::movingDirection::null)
+        father->setDisplayTime(++time);
     handleSnakeCollide();
     scene->update();
 }

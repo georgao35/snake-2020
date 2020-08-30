@@ -34,6 +34,9 @@ snake::snake(QString _head, QStringList _body, QString _direction){
     case 3:
         direction = right;
         break;
+    default:
+        direction = null;
+        break;
     }
 }
 
@@ -85,14 +88,19 @@ void snake::setDirection(movingDirection a)
         return ;
     else if(a == down and direction == up)
         return ;
+    else if(turned)
+        return;
     direction = a;
+    turned = true;
 }
 
 void snake::advance(int phase)
 {
+    turned = false;
     if(phase == 0)
         return ;
-    else if(toGrow -- > 0){//一步长一个单位，而不是一次性全长完
+    else if(toGrow  > 0){//一步长一个单位，而不是一次性全长完
+        toGrow -- ;
         body.push_back(head);
         switch (direction) {
         case up:
@@ -119,24 +127,30 @@ void snake::advance(int phase)
 
 void snake::move()
 {
-    body.push_back(head);
     switch (direction) {
     case up:
+        body.push_back(head);
         head.second--;
+        body.pop_front();
         break;
     case down:
+        body.push_back(head);
         head.second++;
+        body.pop_front();
         break;
     case left:
+        body.push_back(head);
         head.first--;
+        body.pop_front();
         break;
     case right:
+        body.push_back(head);
         head.first++;
+        body.pop_front();
         break;
     default:
         break;
     }
-    body.pop_front();
 }
 /*
 void snake::handleItems()
